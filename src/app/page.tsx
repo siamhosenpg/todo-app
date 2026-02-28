@@ -1,17 +1,18 @@
 import { connectDB } from "@/lib/db";
 import Todo from "@/lib/models/Todo";
 import TodoForm from "@/components/TodoForm";
-import TodoList from "@/components/TodoList";
+
+import TodoListitems from "@/components/layout/todolist/TodoListItems";
 
 export default async function Home() {
   await connectDB();
 
-  const todos = await Todo.find().sort({ createdAt: -1 });
+  const todos = await Todo.find().sort({ createdAt: -1 }).lean();
 
   return (
-    <div className="max-w-xl mx-auto mt-10 space-y-6">
+    <div className="  px-18 min-h-screen bg-background-secondary w-full py-8">
       <TodoForm />
-      <TodoList initialTodos={JSON.parse(JSON.stringify(todos))} />
+      <TodoListitems initialTodos={JSON.parse(JSON.stringify(todos))} />
     </div>
   );
 }

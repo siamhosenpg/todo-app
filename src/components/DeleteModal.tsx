@@ -1,42 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { deleteTodo } from "@/app/actions/todoActions";
+import { MdOutlineDelete } from "react-icons/md";
 
 export default function DeleteModal({ id }: { id: string }) {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
 
   async function handleDelete() {
-    await fetch("/api/todos", {
-      method: "DELETE",
-      body: JSON.stringify({ id }),
-    });
-
+    await deleteTodo(id);
     setOpen(false);
-    router.refresh();
+    // you can also trigger router.refresh() if needed
   }
 
   return (
-    <>
-      <button onClick={() => setOpen(true)} className="text-red-500">
-        Delete
+    <div className=" shrink-0">
+      <button className="text-red-500" onClick={() => setOpen(true)}>
+        <MdOutlineDelete className="text-xl" />
       </button>
 
       {open && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
-          <div className="bg-white p-6 space-y-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/55 bg-opacity-50">
+          <div className="bg-white p-4 rounded shadow">
             <p>Are you sure?</p>
-            <div className="flex gap-4">
+            <div className="flex gap-2 mt-2">
               <button
                 onClick={handleDelete}
-                className="bg-red-500 text-white px-3 py-1"
+                className="bg-red-500 text-white px-2 py-1"
               >
                 Yes
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="border px-3 py-1"
+                className="bg-gray-300 px-2 py-1"
               >
                 No
               </button>
@@ -44,6 +40,6 @@ export default function DeleteModal({ id }: { id: string }) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
