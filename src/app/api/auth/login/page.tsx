@@ -17,7 +17,7 @@ export default function LoginPage() {
     });
   };
   const SiamidLogin = async () => {
-    await signIn("credentials", {
+    await signIn("siamlogin", {
       email: "siamhosen227@gmail.com",
       password: "123456",
       callbackUrl: "/",
@@ -40,9 +40,16 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             className="border border-border bg-background rounded-md p-2"
           />
+
+          <button
+            onClick={handleLogin}
+            className="bg-green-700 cursor-pointer active:opacity-70 rounded-md text-white p-2"
+          >
+            Login
+          </button>
           <button
             className="flex items-center  gap-2 bg-background cursor-pointer p-2 rounded-md"
-            onClick={handleLogin}
+            onClick={SiamidLogin}
           >
             <div className="w-12 h-12 rounded-full overflow-hidden">
               <img
@@ -52,12 +59,6 @@ export default function LoginPage() {
               />
             </div>
             <div>Siam Hosen</div>
-          </button>
-          <button
-            onClick={SiamidLogin}
-            className="bg-green-700 cursor-pointer active:opacity-70 rounded-md text-white p-2"
-          >
-            Login
           </button>
           <p className="mt-4 text-sm">
             Don't have an account?{" "}
