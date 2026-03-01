@@ -1,6 +1,6 @@
 "use client";
 
-import TodoItem from "@/components/TodoItem";
+import TodoItem from "@/components/ui/TodoItem";
 import { useTodoSearch } from "@/context/TodoSearchContext";
 
 export default function TodoListItems({
