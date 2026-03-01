@@ -17,7 +17,7 @@ export default function LoginPage() {
     });
   };
   const SiamidLogin = async () => {
-    await signIn("siamlogin", {
+    await signIn("credentials", {
       email: "siamhosen227@gmail.com",
       password: "123456",
       callbackUrl: "/",
