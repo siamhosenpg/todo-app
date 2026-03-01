@@ -12,7 +12,7 @@ export default async function Home() {
     _id: t._id.toString(),
   }));
   return (
-    <div className="  px-18 min-h-screen bg-background-secondary w-full py-8">
+    <div className=" px-8 md:px-18 min-h-screen bg-background-secondary w-full py-8">
       <TodosClient initialTodos={formatted} />
     </div>
   );

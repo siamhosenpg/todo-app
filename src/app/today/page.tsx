@@ -20,7 +20,7 @@ export default async function today() {
     .lean();
 
   return (
-    <div className="px-18 min-h-screen bg-background-secondary w-full py-8">
+    <div className="px-8 md:px-18 min-h-screen bg-background-secondary w-full py-8">
       <h2 className="text-2xl font-semibold mb-4">Today's Tasks</h2>
 
       <TodoListItems initialTodos={JSON.parse(JSON.stringify(todos))} />

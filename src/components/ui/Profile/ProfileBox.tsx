@@ -11,7 +11,7 @@ const ProfileBox = () => {
           alt=""
         />
       </div>
-      <div className="flex items-center gap-2">
+      <div className=" hidden md:flex items-center gap-2">
         <h3 className="font-medium ">Rofiqul Islam</h3>
         <FiLogOut className="text-gray-500 cursor-pointer" />
       </div>

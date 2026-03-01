@@ -31,7 +31,7 @@ const naveData = [
 
 const NavLeft = () => {
   return (
-    <div className="w-64 h-full border-r border-border  shrink-0">
+    <div className="w-64 h-full border-r border-border  shrink-0 hidden lg:block">
       <div className="flex flex-col mt-6 gap-1">
         {naveData.map((item) => (
           <Link

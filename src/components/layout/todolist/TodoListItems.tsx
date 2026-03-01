@@ -18,7 +18,7 @@ export default function TodoListItems({
   return (
     <div className="space-y-4">
       <div
-        className={`grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-10 ${isPending ? "opacity-50 transition" : "transition"}`}
+        className={`grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 py-10 ${isPending ? "opacity-50 transition" : "transition"}`}
       >
         {isSearching && todosToShow.length === 0 && (
           <p className="text-center text-gray-500">No todos found</p>
