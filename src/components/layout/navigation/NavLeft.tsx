@@ -45,7 +45,7 @@ const NavLeft = () => {
               key={item.name}
               href={item.href}
               className={`h-12 pl-10 px-4 flex items-center transition-colors 
-                ${isActive ? "bg-green-100 text-green-700 font-semibold" : "hover:bg-background-secondary text-gray-800"}`}
+                ${isActive ? "bg-green-100 text-green-700 font-semibold" : "hover:bg-background-secondary "}`}
             >
               <span className="mr-4">{item.icon}</span>
               {item.name}

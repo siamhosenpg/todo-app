@@ -3,8 +3,14 @@ import ProfileBox from "@/components/ui/Profile/ProfileBox";
 import SearchBar from "@/components/ui/search/SearchBar";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 
 const Nav = () => {
+  const pathname = usePathname();
+  const hiddenRoutes = ["/api/auth/login", "/register"];
+  if (hiddenRoutes.includes(pathname)) {
+    return null; // Nav component hide হবে
+  }
   return (
     <div className="h-18 border-b border-border flex items-center justify-between ">
       <div className="w-64 border-r hidden border-border lg:flex items-center justify-center h-full font-semibold shrink-0">

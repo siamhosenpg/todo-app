@@ -4,17 +4,20 @@ import { connectDB } from "@/lib/db";
 import Todo from "@/lib/models/Todo";
 import { todoSchema } from "@/lib/validations";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // -------------------- CREATE TODO --------------------
 export async function createTodo(
   _prevState: any,
   data: { title: string; description?: string },
 ) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return { error: "Not authenticated" };
+
   await connectDB();
 
-  // Validate
   const result = todoSchema.safeParse(data);
-
   if (!result.success) {
     return { error: result.error.flatten().fieldErrors };
   }
@@ -23,37 +26,42 @@ export async function createTodo(
     title: data.title,
     description: data.description,
     completed: false,
+    userId: session.user.id, // link todo to user
   });
 
-  // Revalidate server component path (for SSR lists)
-  revalidatePath("/");
-
-  return { todo }; // return created todo for optimistic UI
+  revalidatePath("/"); // refresh server component
+  return { todo };
 }
 
 // -------------------- TOGGLE TODO --------------------
 export async function toggleTodo(id: string, completed: boolean) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) throw new Error("Not authenticated");
+
   await connectDB();
 
-  // Direct update, race condition safe if client always sends last click state
-  const todo = await Todo.findByIdAndUpdate(
-    id,
+  const todo = await Todo.findOneAndUpdate(
+    { _id: id, userId: session.user.id }, // only allow own todos
     { completed },
-    { new: true }, // return updated document
+    { new: true },
   );
 
-  revalidatePath("/"); // refresh server components
-
+  revalidatePath("/");
   return { todo };
 }
 
 // -------------------- DELETE TODO --------------------
 export async function deleteTodo(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) throw new Error("Not authenticated");
+
   await connectDB();
 
-  const deleted = await Todo.findByIdAndDelete(id);
+  const deleted = await Todo.findOneAndDelete({
+    _id: id,
+    userId: session.user.id,
+  });
 
-  revalidatePath("/"); // refresh server components
-
+  revalidatePath("/");
   return { deleted };
 }

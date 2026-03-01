@@ -26,6 +26,9 @@ export default function TodoListItems({
         {todosToShow.map((todo) => (
           <TodoItem key={todo._id} todo={todo} />
         ))}
+        {todosToShow.length === 0 && !isSearching && (
+          <p className="text-center text-gray-500">No todos yet. Add some!</p>
+        )}
       </div>
     </div>
   );

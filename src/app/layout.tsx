@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/layout/navigation/Nav";
-import NavLeft from "@/components/layout/navigation/NavLeft";
+import NavLeftWrapper from "@/components/layout/navigation/NavLeftWrapper";
 import { TodoSearchProvider } from "@/context/TodoSearchContext";
+import Providers from "./providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -18,23 +19,29 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+  params,
+}: {
   children: React.ReactNode;
-}>) {
+  params?: { slug?: string[] }; // optional catch-all segment
+}) {
+  // get current path
+  const firstSegment = params?.slug?.[0] ?? "";
+  const currentPath = "/" + firstSegment;
+
   return (
     <html lang="en">
-      <body className={`${inter.className}  antialiased`}>
-        <TodoSearchProvider>
-          <div className=" w-full h-screen ">
-            <Nav />
-            <div className="h-[calc(100%-4.5rem)] flex  ">
-              <NavLeft />
-              <div className=" w-full h-full overflow-y-auto overflow-auto">
-                {children}
+      <body className={`${inter.className} antialiased`}>
+        <Providers>
+          <TodoSearchProvider>
+            <div className="w-full h-screen">
+              <Nav />
+              <div className="h-[calc(100%-4.5rem)] flex">
+                <NavLeftWrapper />
+                <div className="w-full h-full overflow-y-auto">{children}</div>
               </div>
             </div>
-          </div>
-        </TodoSearchProvider>
+          </TodoSearchProvider>
+        </Providers>
       </body>
     </html>
   );

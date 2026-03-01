@@ -1,27 +1,29 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition, FormEvent } from "react";
 import { createTodo } from "@/app/actions/todoActions";
 import { Todo } from "@/types/todo";
 
-export default function TodoForm({
-  updateOptimistic,
-}: {
-  updateOptimistic: any;
-}) {
+// Props type
+interface TodoFormProps {
+  updateOptimistic: (todoOrUpdater: Todo | ((state: Todo[]) => Todo[])) => void;
+}
+
+export default function TodoForm({ updateOptimistic }: TodoFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [isPending, startTransition] = useTransition();
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  function generateTempId() {
+  // Generate temporary ID for optimistic update
+  function generateTempId(): string {
     return "temp-" + Date.now();
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
 
     setSuccessMessage(null);
@@ -37,14 +39,15 @@ export default function TodoForm({
       pending: true,
     };
 
-    updateOptimistic(optimisticTodo);
-
     startTransition(async () => {
+      // Optimistic update
+      updateOptimistic(optimisticTodo);
+
       try {
         const result = await createTodo(null, { title, description });
 
-        // ❌ Validation error
         if (result?.error) {
+          // Remove temp todo
           updateOptimistic((state: Todo[]) =>
             state.filter((t) => t._id !== tempId),
           );
@@ -54,12 +57,11 @@ export default function TodoForm({
               result.error.description?.[0] ||
               "Validation failed",
           );
-
           return;
         }
 
-        // ✅ Success
         if (result?.todo) {
+          // Replace temp todo with real todo
           updateOptimistic((state: Todo[]) =>
             state.map((t) =>
               t._id === tempId ? { ...result.todo, pending: false } : t,
@@ -67,7 +69,6 @@ export default function TodoForm({
           );
 
           setSuccessMessage("Todo created successfully!");
-
           setTitle("");
           setDescription("");
           formRef.current?.reset();
@@ -76,11 +77,9 @@ export default function TodoForm({
         updateOptimistic((state: Todo[]) =>
           state.filter((t) => t._id !== tempId),
         );
-
         setErrorMessage("Something went wrong. Try again.");
       }
 
-      // 🔥 Auto hide after 3 sec
       setTimeout(() => {
         setSuccessMessage(null);
         setErrorMessage(null);
@@ -112,14 +111,14 @@ export default function TodoForm({
         />
         <button
           type="submit"
-          className="bg-green-300 shrink-0 font-medium px-6 py-2 rounded-full w-fit cursor-pointer disabled:cursor-not-allowed disabled:bg-green-200"
+          className="bg-green-300 shrink-0 text-black font-medium px-6 py-2 rounded-full w-fit cursor-pointer disabled:cursor-not-allowed disabled:bg-green-200"
           disabled={isPending}
         >
           {isPending ? "Creating..." : "Add Todo"}
         </button>
       </form>
 
-      {/* 🔥 Status Messages */}
+      {/* Status Messages */}
       <div className="mt-2 min-h-6">
         {successMessage && (
           <p className="text-green-600 text-sm">{successMessage}</p>
