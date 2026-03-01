@@ -43,20 +43,26 @@ export default function TodoItem({ todo }: { todo: any }) {
             ? `Due: ${new Date(todo.createdAt).toLocaleDateString()}`
             : null}
         </div>
-        <div className="flex gap-2 mt-2 items-center">
-          <input
-            type="checkbox"
-            id={`checkbox-${todo._id}`}
-            checked={todo.completed}
-            onChange={handleToggle}
-            className="bg-background-secondary border border-border rounded-md w-4 h-4"
-          />
-          <label
-            htmlFor={`checkbox-${todo._id}`}
-            className="text-sm text-gray-600 cursor-pointer"
-          >
-            Mark as completed
-          </label>
+        <div className="flex gap-2 mt-2 items-center justify-between">
+          <div className="flex gap-2 mt-2 items-center">
+            {" "}
+            <input
+              type="checkbox"
+              id={`checkbox-${todo._id}`}
+              checked={todo.completed}
+              onChange={handleToggle}
+              className="bg-background-secondary border border-border rounded-md w-4 h-4"
+            />
+            <label
+              htmlFor={`checkbox-${todo._id}`}
+              className="text-sm text-gray-600 cursor-pointer"
+            >
+              Mark as completed
+            </label>
+          </div>
+          {todo?.pending && (
+            <span className="ml-2 w-4 h-4 border-2 border-gray-400 border-t-black rounded-full animate-spin inline-block"></span>
+          )}
         </div>
       </div>
     </div>
