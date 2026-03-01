@@ -19,15 +19,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params?: { slug?: string[] }; // optional catch-all segment
 }) {
-  // get current path
-  const firstSegment = params?.slug?.[0] ?? "";
-  const currentPath = "/" + firstSegment;
-
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
