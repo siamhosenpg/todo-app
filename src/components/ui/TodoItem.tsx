@@ -1,16 +1,21 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toggleTodo } from "@/app/actions/todoActions";
 import DeleteModal from "./DeleteModal";
 
 export default function TodoItem({ todo }: { todo: any }) {
   const [isPending, startTransition] = useTransition();
 
+  // ✅ Track last clicked completed state to handle race condition
+  const [completedState, setCompletedState] = useState(todo.completed);
+
   function handleToggle() {
-    // ✅ Spec: useTransition + pending state
+    const newState = !completedState;
+    setCompletedState(newState); // update latest click state locally
+
     startTransition(async () => {
-      await toggleTodo(todo._id, !todo.completed);
+      await toggleTodo(todo._id, newState); // server action will now always get last click
     });
   }
 
@@ -28,7 +33,7 @@ export default function TodoItem({ todo }: { todo: any }) {
         <p className="text-sm text-gray-600 mt-2">{todo?.description}</p>
 
         <div className="flex items-center gap-2 mt-3">
-          {todo.completed ? (
+          {completedState ? (
             <span className="font-medium text-black text-sm px-2 py-1 rounded-md bg-green-200">
               Completed
             </span>
@@ -51,9 +56,9 @@ export default function TodoItem({ todo }: { todo: any }) {
             <input
               type="checkbox"
               id={`checkbox-${todo._id}`}
-              checked={todo.completed}
+              checked={completedState}
               onChange={handleToggle}
-              disabled={isPending} // ✅ Prevent race condition
+              disabled={isPending} // prevent double clicks during server update
               className="bg-background-secondary border border-border rounded-md w-4 h-4"
             />
             <label

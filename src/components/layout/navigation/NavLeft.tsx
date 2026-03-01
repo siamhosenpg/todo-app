@@ -1,11 +1,14 @@
+"use client";
+
 import React from "react";
 import { RiHome5Line } from "react-icons/ri";
 import { IoIosToday } from "react-icons/io";
 import { MdPendingActions } from "react-icons/md";
 import { GrCompliance } from "react-icons/gr";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const naveData = [
+const navData = [
   {
     name: "Home",
     href: "/",
@@ -17,11 +20,10 @@ const naveData = [
     icon: <IoIosToday className="text-xl" />,
   },
   {
-    name: "Panding tasks",
+    name: "Pending tasks",
     href: "/pending",
     icon: <MdPendingActions className="text-xl" />,
   },
-
   {
     name: "Completed tasks",
     href: "/completed",
@@ -30,19 +32,26 @@ const naveData = [
 ];
 
 const NavLeft = () => {
+  const pathname = usePathname(); // current route
+
   return (
-    <div className="w-64 h-full border-r border-border  shrink-0 hidden lg:block">
+    <div className="w-64 h-full border-r border-border shrink-0 hidden lg:block">
       <div className="flex flex-col mt-6 gap-1">
-        {naveData.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className="h-12  pl-10  px-4 hover:bg-background-secondary flex items-center"
-          >
-            <span className="mr-4">{item.icon}</span>
-            {item.name}
-          </Link>
-        ))}
+        {navData.map((item) => {
+          const isActive = pathname === item.href; // check active page
+
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`h-12 pl-10 px-4 flex items-center transition-colors 
+                ${isActive ? "bg-green-100 text-green-700 font-semibold" : "hover:bg-background-secondary text-gray-800"}`}
+            >
+              <span className="mr-4">{item.icon}</span>
+              {item.name}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
