@@ -13,49 +13,51 @@ type Todo = {
 
 export default function TodoForm() {
   const formRef = useRef<HTMLFormElement>(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [isPending, startTransition] = useTransition();
 
-  // Optimistic todos array
-  const [optimisticTodos, addOptimisticTodo] = useOptimistic<Todo[], Todo>(
-    [],
-    (state, newTodo) => [newTodo, ...state],
-  );
+  // ✅ Fix: allow both Todo and updater function
+  const [optimisticTodos, addOptimisticTodo] = useOptimistic<
+    Todo[],
+    Todo | ((state: Todo[]) => Todo[])
+  >([], (state, action) => {
+    if (typeof action === "function") {
+      return action(state);
+    }
+    return [action, ...state];
+  });
 
-  // Generate temporary ID without uuid
-  function generateTempId() {
+  function generateTempId(): string {
     return "temp-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const tempId = generateTempId();
+
     const newOptimisticTodo: Todo = {
       _id: tempId,
       title,
       description,
       completed: false,
-      pending: true, // mark as pending for UI
+      pending: true,
     };
 
-    // ✅ Wrap optimistic update in startTransition
     startTransition(() => {
       addOptimisticTodo(newOptimisticTodo);
     });
 
-    // Server action call
     startTransition(async () => {
       try {
         const result = await createTodo(null, { title, description });
 
         if (result?.error) {
-          // Rollback optimistic todo if validation fails
           addOptimisticTodo((state) => state.filter((t) => t._id !== tempId));
+
           alert(result.error.title?.[0] || result.error.description?.[0]);
-        } else {
-          // Replace optimistic todo with real todo from server
+        } else if (result?.todo) {
           addOptimisticTodo((state) =>
             state.map((t) =>
               t._id === tempId ? { ...result.todo, pending: false } : t,
@@ -63,11 +65,10 @@ export default function TodoForm() {
           );
         }
       } catch (err) {
-        // Network error rollback
         addOptimisticTodo((state) => state.filter((t) => t._id !== tempId));
+
         alert("Failed to create todo. Try again.");
       } finally {
-        // Reset form
         setTitle("");
         setDescription("");
         formRef.current?.reset();
@@ -79,25 +80,30 @@ export default function TodoForm() {
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="flex flex-col gap-2 w-full"
+      className="flex flex-col md:flex-row gap-2 w-full md:w-200"
     >
       <input
         name="title"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        className="border px-4 py-2 rounded-md w-full"
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setTitle(e.target.value)
+        }
+        className="border border-border outline-0 px-4 py-1.5 rounded-md w-full"
         placeholder="Title..."
         required
       />
       <textarea
         name="description"
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="border px-4 py-2 rounded-md w-full"
+        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+          setDescription(e.target.value)
+        }
+        className="border border-border outline-0 px-4 py-1.5 rounded-md w-full"
         placeholder="Description (optional)"
       />
       <button
-        className="bg-black text-white px-4 py-2 rounded-md w-fit"
+        type="submit"
+        className="bg-black shrink-0 text-white px-4 py-2 rounded-md w-fit"
         disabled={isPending}
       >
         Add Todo

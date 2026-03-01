@@ -20,19 +20,19 @@ export default function DeleteModal({ id }: { id: string }) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/55 bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow">
-            <p>Are you sure?</p>
-            <div className="flex gap-2 mt-2">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 bg-opacity-50">
+          <div className=" px-6 py-4 rounded shadow w-100 bg-background-secondary border border-border">
+            <p>Are you sure delete this todo?</p>
+            <div className="flex gap-2 mt-4">
               <button
                 onClick={handleDelete}
-                className="bg-red-500 text-white px-2 py-1"
+                className="bg-red-500 rounded-md text-white px-8 py-1 cursor-pointer"
               >
                 Yes
               </button>
               <button
                 onClick={() => setOpen(false)}
-                className="bg-gray-300 px-2 py-1"
+                className="bg-gray-300/10 rounded-md px-8 py-1 cursor-pointer"
               >
                 No
               </button>

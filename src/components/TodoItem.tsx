@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { toggleTodo } from "@/app/actions/todoActions";
-import DeleteModal from "./DeleteModal";
+import DeleteModal from "./ui/DeleteModal";
 
 import { MdMoreHoriz } from "react-icons/md";
 
