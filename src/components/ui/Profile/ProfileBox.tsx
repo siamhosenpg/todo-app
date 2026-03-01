@@ -1,4 +1,5 @@
 import React from "react";
+import { FiLogOut } from "react-icons/fi";
 
 const ProfileBox = () => {
   return (
@@ -10,8 +11,9 @@ const ProfileBox = () => {
           alt=""
         />
       </div>
-      <div>
+      <div className="flex items-center gap-2">
         <h3 className="font-medium ">Rofiqul Islam</h3>
+        <FiLogOut className="text-gray-500 cursor-pointer" />
       </div>
     </div>
   );

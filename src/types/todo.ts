@@ -4,4 +4,5 @@ export type Todo = {
   description?: string;
   completed: boolean;
   pending?: boolean;
+  deleting?: boolean; // 👈 add this
 };
