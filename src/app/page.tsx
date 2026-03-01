@@ -10,12 +10,9 @@ export default async function Home() {
 
   // Current logged-in user session
   const session = await getServerSession(authOptions);
-  if (!session) {
-    return <p>Please login to view your todos.</p>;
-  }
 
   // শুধু current user's todos fetch করা
-  const todos = await Todo.find({ userId: session.user.id })
+  const todos = await Todo.find({ userId: session?.user.id })
     .sort({ createdAt: -1 })
     .lean();
 

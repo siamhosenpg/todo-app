@@ -10,17 +10,15 @@ export default async function Pending() {
 
   // Current logged-in user session
   const session = await getServerSession(authOptions);
-  if (!session) {
-    return <p>Please login to view your pending todos.</p>;
-  }
 
   // শুধু current user's pending todos fetch করা
-  const todos = await Todo.find({ completed: false, userId: session.user.id })
+  const todos = await Todo.find({ completed: false, userId: session?.user.id })
     .sort({ createdAt: -1 })
     .lean();
 
   return (
     <ProtectedRoute>
+      {!session && <p>Please login to view pending tasks.</p>}
       <div className="px-8 md:px-18 min-h-[calc(100vh-72px)] bg-background-secondary w-full py-8">
         <h2 className="text-2xl font-semibold mb-4">Pending Tasks</h2>
         <TodoListItems initialTodos={JSON.parse(JSON.stringify(todos))} />

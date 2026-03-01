@@ -10,9 +10,6 @@ export default async function Today() {
 
   // Current logged-in user session
   const session = await getServerSession(authOptions);
-  if (!session) {
-    return <p>Please login to view today's tasks.</p>;
-  }
 
   // আজকের date range
   const todayStart = new Date();
@@ -23,7 +20,7 @@ export default async function Today() {
 
   // শুধু current user's আজকের tasks fetch করা
   const todos = await Todo.find({
-    userId: session.user.id,
+    userId: session?.user.id,
     createdAt: { $gte: todayStart, $lte: todayEnd },
   })
     .sort({ createdAt: -1 })
@@ -31,6 +28,7 @@ export default async function Today() {
 
   return (
     <ProtectedRoute>
+      {!session && <p>Please login to view today's tasks.</p>}
       <div className="px-8 md:px-18 min-h-[calc(100vh-72px)] bg-background-secondary w-full py-8">
         <h2 className="text-2xl font-semibold mb-4">Today's Tasks</h2>
 
