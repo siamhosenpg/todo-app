@@ -16,6 +16,13 @@ export default function LoginPage() {
       callbackUrl: "/",
     });
   };
+  const SiamidLogin = async () => {
+    await signIn("credentials", {
+      email: "siamhosen227@gmail.com",
+      password: "123456",
+      callbackUrl: "/",
+    });
+  };
 
   return (
     <AuthPageGuard>
@@ -34,8 +41,21 @@ export default function LoginPage() {
             className="border border-border bg-background rounded-md p-2"
           />
           <button
+            className="flex items-center  gap-2 bg-background cursor-pointer p-2 rounded-md"
             onClick={handleLogin}
-            className="bg-green-700 rounded-md text-white p-2"
+          >
+            <div className="w-12 h-12 rounded-full overflow-hidden">
+              <img
+                className="w-full h-full object-cover"
+                src="/image/2.jpg"
+                alt=""
+              />
+            </div>
+            <div>Siam Hosen</div>
+          </button>
+          <button
+            onClick={SiamidLogin}
+            className="bg-green-700 cursor-pointer active:opacity-70 rounded-md text-white p-2"
           >
             Login
           </button>
