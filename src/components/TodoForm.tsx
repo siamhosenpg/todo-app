@@ -88,22 +88,22 @@ export default function TodoForm() {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setTitle(e.target.value)
         }
-        className="border border-border outline-0 px-4 py-1.5 rounded-md w-full"
+        className="border border-border bg-background outline-0 px-6 py-2 rounded-full w-full"
         placeholder="Title..."
         required
       />
-      <textarea
+      <input
         name="description"
         value={description}
-        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setDescription(e.target.value)
         }
-        className="border border-border outline-0 px-4 py-1.5 rounded-md w-full"
+        className="border border-border bg-background outline-0 px-6 py-2  rounded-full w-full"
         placeholder="Description (optional)"
       />
       <button
         type="submit"
-        className="bg-black shrink-0 text-white px-4 py-2 rounded-md w-fit"
+        className="bg-green-300 shrink-0 font-medium px-6 py-2 rounded-full w-fit"
         disabled={isPending}
       >
         Add Todo

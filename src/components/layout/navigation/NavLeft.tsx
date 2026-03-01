@@ -22,12 +22,12 @@ const naveData = [
 const NavLeft = () => {
   return (
     <div className="w-64 h-full border-r border-border  shrink-0">
-      <div className="flex flex-col mt-6">
+      <div className="flex flex-col mt-6 gap-1">
         {naveData.map((item) => (
           <a
             key={item.name}
             href={item.href}
-            className="h-12  flex items-center justify-center px-4 hover:bg-gray-100"
+            className="h-12  pl-16  px-4 hover:bg-background-secondary flex items-center"
           >
             {item.name}
           </a>
