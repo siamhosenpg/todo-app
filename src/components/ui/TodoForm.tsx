@@ -9,6 +9,26 @@ interface TodoFormProps {
   updateOptimistic: (todoOrUpdater: Todo | ((state: Todo[]) => Todo[])) => void;
 }
 
+// ---------------- Response types ----------------
+interface CreateTodoSuccess {
+  todo: Todo;
+  error?: undefined;
+}
+
+interface CreateTodoError {
+  todo?: undefined;
+  error:
+    | string // simple error string
+    | {
+        title?: string[];
+        description?: string[];
+        [key: string]: string[] | undefined;
+      }; // validation errors
+}
+
+type CreateTodoResponse = CreateTodoSuccess | CreateTodoError;
+
+// ---------------- Component ----------------
 export default function TodoForm({ updateOptimistic }: TodoFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const [title, setTitle] = useState<string>("");
@@ -44,24 +64,35 @@ export default function TodoForm({ updateOptimistic }: TodoFormProps) {
       updateOptimistic(optimisticTodo);
 
       try {
-        const result = await createTodo(null, { title, description });
+        const result: CreateTodoResponse = await createTodo(null, {
+          title,
+          description,
+        });
 
-        if (result?.error) {
+        // Check if result has error
+        if ("error" in result && result.error) {
           // Remove temp todo
           updateOptimistic((state: Todo[]) =>
             state.filter((t) => t._id !== tempId),
           );
 
-          setErrorMessage(
-            result.error.title?.[0] ||
-              result.error.description?.[0] ||
-              "Validation failed",
-          );
+          let errorMsg = "Validation failed";
+
+          if (typeof result.error === "string") {
+            // Simple string error
+            errorMsg = result.error;
+          } else if (result.error.title?.length) {
+            errorMsg = result.error.title[0];
+          } else if (result.error.description?.length) {
+            errorMsg = result.error.description[0];
+          }
+
+          setErrorMessage(errorMsg);
           return;
         }
 
-        if (result?.todo) {
-          // Replace temp todo with real todo
+        // Success
+        if ("todo" in result && result.todo) {
           updateOptimistic((state: Todo[]) =>
             state.map((t) =>
               t._id === tempId ? { ...result.todo, pending: false } : t,
